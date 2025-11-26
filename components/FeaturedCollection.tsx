@@ -2,10 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { supabase, Product } from '@/lib/supabase';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowRight } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -75,7 +78,8 @@ export default function FeaturedCollection() {
         .from('products')
         .select('*')
         .eq('is_featured', true)
-        .order('sort_order');
+        .order('sort_order')
+        .limit(6);
 
       if (data) setProducts(data);
     };
@@ -118,10 +122,22 @@ export default function FeaturedCollection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {products.map((product, index) => (
             <ProductCard key={product.id} product={product} index={index} />
           ))}
+        </div>
+
+        <div className="text-center">
+          <Link href="/products">
+            <Button
+              size="lg"
+              className="bg-[#0f4c3a] hover:bg-[#0f4c3a]/90 text-white px-8 py-6 text-lg group"
+            >
+              See All Products
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
