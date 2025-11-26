@@ -690,6 +690,8 @@ export function AboutSection() {
 export function Newsletter() {
   const [email, setEmail] = useState('');
   const { toast } = useToast();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -702,36 +704,120 @@ export function Newsletter() {
     }
   };
 
+  useEffect(() => {
+    if (headingRef.current) {
+      gsap.fromTo(
+        headingRef.current,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    }
+  }, []);
+
   return (
-    <section id="contact" className="py-16 bg-gradient-to-br from-[#0f4c3a] to-[#0a3829]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl mb-6 md:mb-8">
-          <Mail className="w-8 h-8 text-white" />
+    <section ref={containerRef} id="contact" className="py-16 relative overflow-hidden">
+      {/* Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0f4c3a] via-[#0a3829] to-[#0f4c3a]"></div>
+      
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-[#d4af37]/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#d4af37]/5 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Pattern Overlay */}
+      <div className="absolute inset-0 opacity-10" style={{
+        backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+        backgroundSize: '40px 40px'
+      }}></div>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        {/* Icon */}
+        <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl mb-8 border border-white/20 shadow-lg">
+          <Mail className="w-10 h-10 text-white" />
         </div>
-        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 md:mb-6">
+
+        {/* Heading */}
+        <h2
+          ref={headingRef}
+          className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold text-white mb-6 md:mb-8"
+        >
           Join the Decor Circle
         </h2>
-        <p className="text-lg md:text-xl text-white/80 mb-10 md:mb-12 max-w-2xl mx-auto leading-relaxed">
+        
+        <p className="text-lg md:text-xl text-white/90 mb-12 md:mb-16 max-w-2xl mx-auto leading-relaxed">
           Get exclusive access to new collections, design tips, and special offers delivered to your inbox
         </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
-          <Input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="flex-1 h-14 bg-white/95 border-none text-[#1a202c] placeholder:text-[#1a202c]/50"
-          />
-          <Button
-            type="submit"
-            size="lg"
-            className="h-14 bg-[#d4af37] hover:bg-[#d4af37]/90 text-[#1a202c] font-semibold px-8"
-          >
-            Subscribe
-          </Button>
+        {/* Benefits */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 md:mb-16 max-w-3xl mx-auto">
+          <div className="flex flex-col items-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
+            <Sparkles className="w-6 h-6 text-[#d4af37] mb-2" />
+            <p className="text-white/90 text-sm font-medium">Exclusive Offers</p>
+          </div>
+          <div className="flex flex-col items-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
+            <Mail className="w-6 h-6 text-[#d4af37] mb-2" />
+            <p className="text-white/90 text-sm font-medium">Design Tips</p>
+          </div>
+          <div className="flex flex-col items-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
+            <ArrowRight className="w-6 h-6 text-[#d4af37] mb-2" />
+            <p className="text-white/90 text-sm font-medium">Early Access</p>
+          </div>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-4 bg-white/10 backdrop-blur-md rounded-2xl p-2 border border-white/20 shadow-2xl">
+            <Input
+              type="email"
+              placeholder="Enter your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="flex-1 h-14 bg-white/95 border-none text-[#1a202c] placeholder:text-[#1a202c]/50 rounded-xl px-6 text-base focus:ring-2 focus:ring-[#d4af37]"
+            />
+            <Button
+              type="submit"
+              size="lg"
+              className="h-14 bg-[#d4af37] hover:bg-[#d4af37]/90 text-[#1a202c] font-bold px-8 md:px-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+            >
+              Subscribe
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
+          <p className="text-white/70 text-sm mt-4">
+            We respect your privacy. Unsubscribe at any time.
+          </p>
         </form>
+
+        {/* Trust Indicators */}
+        <div className="mt-12 md:mt-16 flex flex-wrap items-center justify-center gap-6 text-white/80 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#d4af37] rounded-full"></div>
+            <span>No spam, ever</span>
+          </div>
+          <div className="w-px h-4 bg-white/30"></div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#d4af37] rounded-full"></div>
+            <span>Weekly updates</span>
+          </div>
+          <div className="w-px h-4 bg-white/30"></div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#d4af37] rounded-full"></div>
+            <span>10K+ subscribers</span>
+          </div>
+        </div>
       </div>
     </section>
   );
