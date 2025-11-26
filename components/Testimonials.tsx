@@ -109,7 +109,7 @@ export default function Testimonials() {
         </div>
 
         {testimonials.length > 0 && (
-          <div className="relative">
+          <div className="relative px-8 md:px-16">
             <Carousel
               setApi={setApi}
               opts={{
@@ -165,8 +165,8 @@ export default function Testimonials() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="hidden md:flex -left-12 h-12 w-12 bg-white border-2 border-[#0f4c3a]/20 hover:bg-[#0f4c3a] hover:text-white hover:border-[#0f4c3a] shadow-lg" />
-              <CarouselNext className="hidden md:flex -right-12 h-12 w-12 bg-white border-2 border-[#0f4c3a]/20 hover:bg-[#0f4c3a] hover:text-white hover:border-[#0f4c3a] shadow-lg" />
+              <CarouselPrevious className="hidden md:flex -left-8 h-12 w-12 bg-white border-2 border-[#0f4c3a]/20 hover:bg-[#0f4c3a] hover:text-white hover:border-[#0f4c3a] shadow-lg" />
+              <CarouselNext className="hidden md:flex -right-8 h-12 w-12 bg-white border-2 border-[#0f4c3a]/20 hover:bg-[#0f4c3a] hover:text-white hover:border-[#0f4c3a] shadow-lg" />
             </Carousel>
 
             {/* Custom Navigation Dots */}

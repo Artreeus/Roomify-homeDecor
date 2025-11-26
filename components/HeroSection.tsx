@@ -250,7 +250,7 @@ export default function HeroSection() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 backdrop-blur-sm border border-[#d4af37]/30 text-[#0f4c3a] text-sm font-semibold tracking-wide uppercase mb-8 shadow-sm"
             >
               <Sparkles className="w-4 h-4 text-[#d4af37]" />
-              <span>New Collection 2024</span>
+              <span>New Collection 2025</span>
             </div>
 
             {/* Main Headline */}
