@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowRight, Calendar, Mail, Sparkles, Facebook, Instagram, Twitter, Linkedin, X, Clock, BookOpen, Award, Users, Heart, Target } from 'lucide-react';
+import { ArrowRight, Calendar, Mail, Sparkles, Facebook, Instagram, Twitter, Linkedin, X, Clock, BookOpen, Award, Users, Heart, Target, Phone, MapPin, CreditCard, Shield, Truck } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -846,27 +846,78 @@ export function Footer() {
   };
 
   const socialLinks = [
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
+    { icon: Instagram, href: '#', label: 'Instagram', color: 'hover:bg-pink-500' },
+    { icon: Facebook, href: '#', label: 'Facebook', color: 'hover:bg-blue-600' },
+    { icon: Twitter, href: '#', label: 'Twitter', color: 'hover:bg-sky-500' },
+    { icon: Linkedin, href: '#', label: 'LinkedIn', color: 'hover:bg-blue-700' },
+  ];
+
+  const features = [
+    { icon: Truck, text: 'Free Shipping' },
+    { icon: Shield, text: 'Secure Payment' },
+    { icon: CreditCard, text: 'Easy Returns' },
+    { icon: Phone, text: '24/7 Support' },
   ];
 
   return (
-    <footer className="bg-[#1a202c] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <footer className="bg-[#1a202c] text-white relative overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-[#0f4c3a]/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#d4af37]/5 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
+        {/* Features Bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-16 pb-12 border-b border-white/10">
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <div
+                key={index}
+                className="flex flex-col md:flex-row items-center gap-3 text-center md:text-left group"
+              >
+                <div className="w-12 h-12 bg-[#0f4c3a]/20 rounded-lg flex items-center justify-center group-hover:bg-[#0f4c3a] transition-colors duration-300">
+                  <Icon className="w-6 h-6 text-[#d4af37]" />
+                </div>
+                <span className="text-sm md:text-base text-white/80 font-medium">{feature.text}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+          {/* Brand Section */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center space-x-2 mb-6 group">
-              <div className="bg-[#0f4c3a] text-white p-2 rounded-lg">
+            <Link href="/" className="flex items-center space-x-2 mb-6 group inline-block">
+              <div className="bg-[#0f4c3a] text-white p-2 rounded-lg group-hover:bg-[#0f4c3a]/90 transition-colors">
                 <Sparkles className="w-6 h-6" />
               </div>
               <span className="text-2xl font-bold">Roomify</span>
             </Link>
-            <p className="text-white/70 leading-relaxed mb-6 max-w-sm">
+            <p className="text-white/70 leading-relaxed mb-6 max-w-sm text-base">
               Transforming ordinary rooms into extraordinary sanctuaries with timeless design and sustainable craftsmanship.
             </p>
-            <div className="flex space-x-4">
+            
+            {/* Contact Info */}
+            <div className="space-y-3 mb-6">
+              <div className="flex items-center gap-3 text-white/70">
+                <MapPin className="w-4 h-4 text-[#d4af37]" />
+                <span className="text-sm">123 Design Street, Dhaka, Bangladesh</span>
+              </div>
+              <div className="flex items-center gap-3 text-white/70">
+                <Phone className="w-4 h-4 text-[#d4af37]" />
+                <span className="text-sm">+880 1234 567890</span>
+              </div>
+              <div className="flex items-center gap-3 text-white/70">
+                <Mail className="w-4 h-4 text-[#d4af37]" />
+                <span className="text-sm">hello@roomify.com</span>
+              </div>
+            </div>
+
+            {/* Social Links */}
+            <div className="flex space-x-3">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
                 return (
@@ -874,7 +925,7 @@ export function Footer() {
                     key={social.label}
                     href={social.href}
                     aria-label={social.label}
-                    className="w-10 h-10 bg-white/10 hover:bg-[#0f4c3a] rounded-lg flex items-center justify-center transition-colors"
+                    className={`w-10 h-10 bg-white/10 ${social.color} rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110`}
                   >
                     <Icon className="w-5 h-5" />
                   </a>
@@ -883,17 +934,19 @@ export function Footer() {
             </div>
           </div>
 
+          {/* Footer Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h3 className="font-semibold text-lg mb-4">{category}</h3>
+              <h3 className="font-bold text-lg mb-6 text-white">{category}</h3>
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="text-white/70 hover:text-white transition-colors"
+                      className="text-white/70 hover:text-[#d4af37] transition-colors duration-300 text-sm flex items-center gap-2 group"
                     >
-                      {link.label}
+                      <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                      <span>{link.label}</span>
                     </a>
                   </li>
                 ))}
@@ -902,11 +955,19 @@ export function Footer() {
           ))}
         </div>
 
+        {/* Bottom Bar */}
         <div className="border-t border-white/10 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-white/60 text-sm">
               &copy; {new Date().getFullYear()} Roomify. All rights reserved.
             </p>
+            <div className="flex flex-wrap items-center gap-6 text-sm text-white/60">
+              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+              <span className="hidden md:inline">•</span>
+              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+              <span className="hidden md:inline">•</span>
+              <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+            </div>
           </div>
         </div>
       </div>
