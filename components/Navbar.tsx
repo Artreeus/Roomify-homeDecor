@@ -8,20 +8,35 @@ import { Button } from '@/components/ui/button';
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeLink, setActiveLink] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+      
+      // Update active link based on scroll position
+      const sections = ['home', 'collection', 'journal', 'about', 'contact'];
+      const scrollPosition = window.scrollY + 100;
+      
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sections[i]);
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveLink(`#${sections[i]}`);
+          break;
+        }
+      }
     };
+    
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check on mount
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navLinks = [
     { href: '#home', label: 'Home' },
     { href: '#collection', label: 'Shop' },
-    { href: '#about', label: 'About' },
     { href: '#journal', label: 'Journal' },
+    { href: '#about', label: 'About' },
     { href: '#contact', label: 'Contact' },
   ];
 
@@ -50,14 +65,25 @@ export default function Navbar() {
               </Link>
 
               {/* Center Nav Items - inside pill */}
-              <div className="hidden md:flex items-center space-x-6 transition-all duration-500 ease-out">
+              <div className="hidden md:flex items-center space-x-1 md:space-x-2 lg:space-x-4 transition-all duration-500 ease-out">
                 {navLinks.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
-                    className="text-[#1a202c] hover:text-[#0f4c3a] transition-all duration-300 font-medium text-sm"
+                    onClick={() => setActiveLink(link.href)}
+                    className={`relative px-3 py-2 text-sm font-semibold transition-all duration-300 group ${
+                      activeLink === link.href
+                        ? 'text-[#0f4c3a]'
+                        : 'text-[#1a202c] hover:text-[#0f4c3a]'
+                    }`}
                   >
-                    {link.label}
+                    <span className="relative z-10">{link.label}</span>
+                    {/* Active indicator */}
+                    {activeLink === link.href && (
+                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0f4c3a] rounded-full"></span>
+                    )}
+                    {/* Hover underline */}
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0f4c3a] rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                   </a>
                 ))}
               </div>
@@ -95,14 +121,25 @@ export default function Navbar() {
               </Link>
 
               {/* Center Nav Items */}
-              <div className="hidden md:flex items-center space-x-8 transition-all duration-500 ease-out flex-shrink-0">
+              <div className="hidden md:flex items-center space-x-6 lg:space-x-8 transition-all duration-500 ease-out flex-shrink-0">
                 {navLinks.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
-                    className="text-[#1a202c] hover:text-[#0f4c3a] transition-all duration-300 font-medium whitespace-nowrap"
+                    onClick={() => setActiveLink(link.href)}
+                    className={`relative px-2 py-2 text-base font-semibold transition-all duration-300 group whitespace-nowrap ${
+                      activeLink === link.href
+                        ? 'text-[#0f4c3a]'
+                        : 'text-[#1a202c] hover:text-[#0f4c3a]'
+                    }`}
                   >
-                    {link.label}
+                    <span className="relative z-10">{link.label}</span>
+                    {/* Active indicator */}
+                    {activeLink === link.href && (
+                      <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#0f4c3a] rounded-full"></span>
+                    )}
+                    {/* Hover underline */}
+                    <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#0f4c3a] rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                   </a>
                 ))}
               </div>
@@ -129,23 +166,32 @@ export default function Navbar() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#f9f9f5] border-t border-[#0f4c3a]/10">
-          <div className="px-4 py-6 space-y-4">
+        <div className="md:hidden bg-[#f9f9f5]/98 backdrop-blur-md border-t border-[#0f4c3a]/10 shadow-lg">
+          <div className="px-4 py-6 space-y-2">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="block text-[#1a202c] hover:text-[#0f4c3a] transition-colors font-medium"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setActiveLink(link.href);
+                }}
+                className={`block px-4 py-3 rounded-lg transition-all duration-300 font-semibold ${
+                  activeLink === link.href
+                    ? 'bg-[#0f4c3a] text-white'
+                    : 'text-[#1a202c] hover:bg-[#0f4c3a]/10 hover:text-[#0f4c3a]'
+                }`}
               >
                 {link.label}
               </a>
             ))}
-            <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-              <Button className="w-full bg-[#0f4c3a] hover:bg-[#0f4c3a]/90 text-white">
-                Login
-              </Button>
-            </Link>
+            <div className="pt-4 border-t border-[#0f4c3a]/10 mt-4">
+              <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                <Button className="w-full bg-[#0f4c3a] hover:bg-[#0f4c3a]/90 text-white rounded-lg py-6 text-base font-semibold">
+                  Login
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       )}
