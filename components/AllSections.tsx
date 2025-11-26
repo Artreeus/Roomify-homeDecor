@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowRight, Calendar, Mail, Sparkles, Facebook, Instagram, Twitter, Linkedin, X } from 'lucide-react';
+import { ArrowRight, Calendar, Mail, Sparkles, Facebook, Instagram, Twitter, Linkedin, X, Clock, BookOpen } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -126,24 +126,39 @@ const lookbookImages = [
 const journalPosts = [
   {
     title: 'Minimalism Trends 2025',
-    excerpt: 'Discover how less truly becomes more in modern interior design.',
+    excerpt: 'Discover how less truly becomes more in modern interior design. Explore the latest minimalist approaches that create serene, functional spaces.',
     date: 'November 20, 2025',
-    image: 'https://images.pexels.com/photos/1743231/pexels-photo-1743231.jpeg?auto=compress&cs=tinysrgb&w=800',
+    image: 'https://images.pexels.com/photos/1743231/pexels-photo-1743231.jpeg?auto=compress&cs=tinysrgb&w=1200',
     category: 'Trends',
+    readTime: '5 min read',
+    featured: true,
   },
   {
     title: 'How to Style Brass Accents',
-    excerpt: 'Master the art of incorporating warm metallic tones into your space.',
+    excerpt: 'Master the art of incorporating warm metallic tones into your space. Learn the secrets of balancing brass with modern aesthetics.',
     date: 'November 15, 2025',
-    image: 'https://images.pexels.com/photos/2459349/pexels-photo-2459349.jpeg?auto=compress&cs=tinysrgb&w=800',
+    image: 'https://images.pexels.com/photos/2459349/pexels-photo-2459349.jpeg?auto=compress&cs=tinysrgb&w=1200',
     category: 'Styling Tips',
+    readTime: '7 min read',
+    featured: false,
   },
   {
     title: 'Sustainable Living Spaces',
-    excerpt: 'Create an eco-friendly home without compromising on style.',
+    excerpt: 'Create an eco-friendly home without compromising on style. Discover sustainable materials and practices for conscious living.',
     date: 'November 10, 2025',
-    image: 'https://images.pexels.com/photos/1030850/pexels-photo-1030850.jpeg?auto=compress&cs=tinysrgb&w=800',
+    image: 'https://images.pexels.com/photos/1030850/pexels-photo-1030850.jpeg?auto=compress&cs=tinysrgb&w=1200',
     category: 'Sustainability',
+    readTime: '6 min read',
+    featured: false,
+  },
+  {
+    title: 'Color Psychology in Home Design',
+    excerpt: 'Understand how colors affect mood and create harmonious spaces. Transform your home with strategic color choices.',
+    date: 'November 5, 2025',
+    image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    category: 'Design Theory',
+    readTime: '8 min read',
+    featured: false,
   },
 ];
 
@@ -299,19 +314,40 @@ export function Lookbook() {
 
 export function DesignJournal() {
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (headingRef.current) {
+      gsap.fromTo(
+        headingRef.current,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    }
+
     cardsRef.current.forEach((card, index) => {
       if (card) {
         gsap.fromTo(
           card,
-          { y: 80, opacity: 0 },
+          { y: 80, opacity: 0, scale: 0.9 },
           {
             y: 0,
             opacity: 1,
+            scale: 1,
             duration: 0.8,
-            delay: index * 0.15,
-            ease: 'power3.out',
+            delay: index * 0.1,
+            ease: 'back.out(1.2)',
             scrollTrigger: {
               trigger: card,
               start: 'top 85%',
@@ -323,63 +359,160 @@ export function DesignJournal() {
     });
   }, []);
 
+  const featuredPost = journalPosts.find(post => post.featured);
+  const regularPosts = journalPosts.filter(post => !post.featured);
+
   return (
-    <section id="journal" className="py-16 bg-[#f9f9f5]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#1a202c] mb-4 md:mb-6">
+    <section ref={containerRef} id="journal" className="py-16 bg-gradient-to-b from-white to-[#f9f9f5] relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-[#0f4c3a]/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#d4af37]/5 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0f4c3a]/10 text-[#0f4c3a] text-sm font-semibold uppercase tracking-wide mb-6">
+            <BookOpen className="w-4 h-4" />
+            <span>Design Insights</span>
+          </div>
+          <h2
+            ref={headingRef}
+            className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-[#1a202c] mb-4 md:mb-6"
+          >
             The Design Journal
           </h2>
-          <p className="text-lg md:text-xl text-[#1a202c]/60 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-[#1a202c]/70 max-w-3xl mx-auto leading-relaxed">
             Inspiration, tips, and stories from the world of modern home design
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
-          {journalPosts.map((post, index) => (
+        {/* Featured Post */}
+        {featuredPost && (
+          <div
+            ref={(el) => {
+              cardsRef.current[0] = el;
+            }}
+            className="mb-12 md:mb-16"
+          >
+            <Card className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 bg-white">
+              <CardContent className="p-0">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                  <div className="relative h-64 lg:h-96 overflow-hidden">
+                    <Image
+                      src={featuredPost.image}
+                      alt={featuredPost.title}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-[#d4af37] text-[#1a202c] px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide">
+                        Featured
+                      </span>
+                    </div>
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <span className="bg-[#0f4c3a] text-white px-3 py-1 rounded-full text-xs font-medium">
+                        {featuredPost.category}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-8 md:p-12 flex flex-col justify-center">
+                    <div className="flex items-center gap-4 text-sm text-[#1a202c]/60 mb-4">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        <span>{featuredPost.date}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        <span>{featuredPost.readTime}</span>
+                      </div>
+                    </div>
+                    <h3 className="text-3xl md:text-4xl font-bold text-[#1a202c] mb-4 group-hover:text-[#0f4c3a] transition-colors leading-tight">
+                      {featuredPost.title}
+                    </h3>
+                    <p className="text-[#1a202c]/70 mb-6 leading-relaxed text-lg">
+                      {featuredPost.excerpt}
+                    </p>
+                    <Button
+                      variant="outline"
+                      className="w-fit border-2 border-[#0f4c3a] text-[#0f4c3a] hover:bg-[#0f4c3a] hover:text-white rounded-full px-6 py-6 text-base group/btn"
+                    >
+                      Read Full Article
+                      <ArrowRight className="ml-2 w-5 h-5 group-hover/btn:translate-x-2 transition-transform" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Regular Posts Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {regularPosts.map((post, index) => (
             <Card
               key={post.title}
               ref={(el) => {
-                cardsRef.current[index] = el;
+                cardsRef.current[index + 1] = el;
               }}
-              className="group overflow-hidden border-none shadow-lg hover:shadow-2xl transition-all duration-300 bg-white"
+              className="group overflow-hidden border-none shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white h-full flex flex-col"
             >
-              <CardContent className="p-0">
+              <CardContent className="p-0 flex flex-col h-full">
                 <div className="relative h-64 overflow-hidden">
                   <Image
                     src={post.image}
                     alt={post.title}
                     fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="absolute top-4 left-4">
-                    <span className="bg-[#0f4c3a] text-white px-3 py-1 rounded-full text-xs font-medium">
+                    <span className="bg-[#0f4c3a] text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
                       {post.category}
                     </span>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center text-sm text-[#1a202c]/60 mb-3">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    {post.date}
+                <div className="p-6 flex flex-col flex-grow">
+                  <div className="flex items-center gap-3 text-xs md:text-sm text-[#1a202c]/60 mb-3">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3 md:w-4 md:h-4" />
+                      <span>{post.date}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-3 h-3 md:w-4 md:h-4" />
+                      <span>{post.readTime}</span>
+                    </div>
                   </div>
-                  <h3 className="text-2xl font-semibold text-[#1a202c] mb-3 group-hover:text-[#0f4c3a] transition-colors">
+                  <h3 className="text-xl md:text-2xl font-bold text-[#1a202c] mb-3 group-hover:text-[#0f4c3a] transition-colors line-clamp-2">
                     {post.title}
                   </h3>
-                  <p className="text-[#1a202c]/70 mb-4 leading-relaxed">
+                  <p className="text-[#1a202c]/70 mb-4 leading-relaxed line-clamp-3 flex-grow">
                     {post.excerpt}
                   </p>
                   <Button
                     variant="ghost"
-                    className="text-[#0f4c3a] hover:text-[#0f4c3a]/80 p-0 h-auto group/btn"
+                    className="text-[#0f4c3a] hover:text-[#0f4c3a]/80 p-0 h-auto group/btn w-fit mt-auto"
                   >
                     Read More
-                    <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                    <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-2 transition-transform" />
                   </Button>
                 </div>
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* View All Button */}
+        <div className="text-center mt-12 md:mt-16">
+          <Button
+            variant="outline"
+            size="lg"
+            className="border-2 border-[#0f4c3a] text-[#0f4c3a] hover:bg-[#0f4c3a] hover:text-white rounded-full px-8 py-6 text-lg group"
+          >
+            View All Articles
+            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
+          </Button>
         </div>
       </div>
     </section>
