@@ -28,21 +28,19 @@ export default function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
-        scrolled ? 'py-2' : 'py-0'
+        scrolled
+          ? 'bg-[#f9f9f5]/95 backdrop-blur-md shadow-lg'
+          : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Pill-shaped container when scrolled */}
-        <div
-          className={`transition-all duration-500 ease-out ${
-            scrolled
-              ? 'absolute inset-0 mx-auto max-w-3xl rounded-full bg-[#f9f9f5]/95 backdrop-blur-md shadow-lg border border-[#0f4c3a]/10'
-              : 'hidden'
-          }`}
-        />
+        {/* Pill-shaped container when scrolled - positioned behind content */}
+        {scrolled && (
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-full rounded-full bg-[#f9f9f5]/95 backdrop-blur-md shadow-lg border border-[#0f4c3a]/10 pointer-events-none" />
+        )}
 
         <div
-          className={`flex items-center transition-all duration-500 ease-out relative ${
+          className={`flex items-center transition-all duration-500 ease-out relative z-10 ${
             scrolled
               ? 'h-14 justify-center'
               : 'h-20 justify-between'
@@ -51,7 +49,7 @@ export default function Navbar() {
           {/* Logo - moves closer to center when scrolled */}
           <Link
             href="/"
-            className={`flex items-center space-x-2 group transition-all duration-500 ease-out z-10 ${
+            className={`flex items-center space-x-2 group transition-all duration-500 ease-out ${
               scrolled
                 ? 'absolute left-1/2 -translate-x-[220px] md:-translate-x-[200px]'
                 : 'relative left-0 translate-x-0'
@@ -67,7 +65,7 @@ export default function Navbar() {
 
           {/* Center Nav Items */}
           <div
-            className={`hidden md:flex items-center transition-all duration-500 ease-out z-10 ${
+            className={`hidden md:flex items-center transition-all duration-500 ease-out ${
               scrolled
                 ? 'space-x-6 absolute left-1/2 -translate-x-1/2'
                 : 'space-x-8 relative'
@@ -88,7 +86,7 @@ export default function Navbar() {
 
           {/* Right Side Content - Admin button moves closer to center when scrolled */}
           <div
-            className={`hidden md:flex items-center transition-all duration-500 ease-out z-10 ${
+            className={`hidden md:flex items-center transition-all duration-500 ease-out ${
               scrolled
                 ? 'absolute right-1/2 translate-x-[220px] md:translate-x-[200px]'
                 : 'relative right-0 translate-x-0'
@@ -108,7 +106,7 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className={`md:hidden text-[#1a202c] transition-all duration-500 z-10 ${
+            className={`md:hidden text-[#1a202c] transition-all duration-500 ${
               scrolled ? 'absolute right-4' : 'relative'
             }`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

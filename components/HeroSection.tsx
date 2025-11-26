@@ -1,16 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import gsap from 'gsap';
-
-// Dynamically import Hero3D to avoid SSR issues
-const Hero3D = dynamic(() => import('./Hero3D'), {
-  ssr: false,
-  loading: () => <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#f9f9f5] via-[#f5f5f0] to-[#ebe9dd]" />,
-});
 
 // Mock Data Types (Simulating Supabase structure)
 type ContentBlock = {
@@ -96,9 +89,11 @@ export default function HeroSection() {
       id="home"
       className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#f9f9f5] via-[#f5f5f0] to-[#ebe9dd]"
     >
-      {/* 3D Background Layer */}
-      <div className="absolute inset-0 w-full h-full opacity-60 md:opacity-100 transition-opacity duration-1000">
-        <Hero3D />
+      {/* Decorative Background Elements */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
+        <div className="absolute top-20 right-20 w-64 h-64 bg-[#d4af37]/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-[#0f4c3a]/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#d4af37]/5 rounded-full blur-3xl"></div>
       </div>
 
       {/* Content Layer */}
