@@ -1,8 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Button } from './ui/button';
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import gsap from 'gsap';
-import Hero3D from './Hero3D';
+
+// Dynamically import Hero3D to avoid SSR issues
+const Hero3D = dynamic(() => import('./Hero3D'), {
+  ssr: false,
+  loading: () => <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#f9f9f5] via-[#f5f5f0] to-[#ebe9dd]" />,
+});
 
 // Mock Data Types (Simulating Supabase structure)
 type ContentBlock = {
@@ -27,7 +35,7 @@ export default function HeroSection() {
     const fetchContent = async () => {
       // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 800));
-      
+
       // Mock Data
       const mockData: ContentBlock[] = [
         { block_key: 'hero_headline', content: 'Elevate Your Space with Timeless Design' },
@@ -36,7 +44,7 @@ export default function HeroSection() {
 
       // In a real app, this would be: 
       // const { data } = await supabase.from('content_blocks')...
-      
+
       const headlineBlock = mockData.find(b => b.block_key === 'hero_headline');
       const subtextBlock = mockData.find(b => b.block_key === 'hero_subtext');
 
@@ -59,22 +67,22 @@ export default function HeroSection() {
           opacity: 0,
           duration: 0.8,
         })
-        .from(headlineRef.current, {
-          y: 60,
-          opacity: 0,
-          duration: 1.2,
-          skewY: 2,
-        }, '-=0.4')
-        .from(subtextRef.current, {
-          y: 30,
-          opacity: 0,
-          duration: 1,
-        }, '-=0.8')
-        .from(ctaRef.current, {
-          y: 20,
-          opacity: 0,
-          duration: 0.8,
-        }, '-=0.6');
+          .from(headlineRef.current, {
+            y: 60,
+            opacity: 0,
+            duration: 1.2,
+            skewY: 2,
+          }, '-=0.4')
+          .from(subtextRef.current, {
+            y: 30,
+            opacity: 0,
+            duration: 1,
+          }, '-=0.8')
+          .from(ctaRef.current, {
+            y: 20,
+            opacity: 0,
+            duration: 0.8,
+          }, '-=0.6');
 
       }, containerRef);
 
@@ -83,10 +91,10 @@ export default function HeroSection() {
   }, [isLoading]);
 
   return (
-    <section 
+    <section
       ref={containerRef}
-      id="home" 
-      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-cream via-[#f5f5f0] to-[#ebe9dd]"
+      id="home"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#f9f9f5] via-[#f5f5f0] to-[#ebe9dd]"
     >
       {/* 3D Background Layer */}
       <div className="absolute inset-0 w-full h-full opacity-60 md:opacity-100 transition-opacity duration-1000">
@@ -95,30 +103,30 @@ export default function HeroSection() {
 
       {/* Content Layer */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
-        
+
         {/* Loading State Skeleton */}
         {isLoading ? (
           <div className="animate-pulse flex flex-col items-center space-y-6 max-w-3xl w-full">
-             <div className="h-6 w-32 bg-gray-200 rounded-full"></div>
-             <div className="h-24 w-full bg-gray-200 rounded-lg"></div>
-             <div className="h-24 w-3/4 bg-gray-200 rounded-lg"></div>
-             <div className="h-14 w-48 bg-gray-200 rounded-full mt-8"></div>
+            <div className="h-6 w-32 bg-gray-200 rounded-full"></div>
+            <div className="h-24 w-full bg-gray-200 rounded-lg"></div>
+            <div className="h-24 w-3/4 bg-gray-200 rounded-lg"></div>
+            <div className="h-14 w-48 bg-gray-200 rounded-full mt-8"></div>
           </div>
         ) : (
           <>
             {/* Tagline */}
-            <div 
+            <div
               ref={tagRef}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 backdrop-blur-sm border border-gold-400/30 text-olive-800 text-sm font-semibold tracking-wide uppercase mb-8 shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 backdrop-blur-sm border border-[#d4af37]/30 text-[#0f4c3a] text-sm font-semibold tracking-wide uppercase mb-8 shadow-sm"
             >
-              <Sparkles className="w-4 h-4 text-gold-500" />
+              <Sparkles className="w-4 h-4 text-[#d4af37]" />
               <span>New Collection 2024</span>
             </div>
 
             {/* Main Headline */}
             <h1
               ref={headlineRef}
-              className="font-serif text-5xl md:text-7xl lg:text-8xl font-medium text-olive-900 mb-8 leading-[1.1] tracking-tight"
+              className="font-serif text-5xl md:text-7xl lg:text-8xl font-medium text-[#1a202c] mb-8 leading-[1.1] tracking-tight"
             >
               {headline.split(' ').map((word, i) => (
                 <span key={i} className="inline-block mr-3 md:mr-5">
@@ -130,7 +138,7 @@ export default function HeroSection() {
             {/* Subtext */}
             <p
               ref={subtextRef}
-              className="font-sans text-lg md:text-xl text-olive-800/70 mb-12 max-w-2xl mx-auto leading-relaxed"
+              className="font-sans text-lg md:text-xl text-[#1a202c]/70 mb-12 max-w-2xl mx-auto leading-relaxed"
             >
               {subtext}
             </p>
@@ -139,18 +147,17 @@ export default function HeroSection() {
             <div ref={ctaRef} className="flex flex-col sm:flex-row items-center gap-4">
               <Button
                 size="lg"
-                variant="primary"
-                className="group px-10"
+                className="group px-10 bg-[#0f4c3a] hover:bg-[#0f4c3a]/90 text-white"
                 onClick={() => console.log('Shop Collection clicked')}
               >
                 Shop Collection
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              
+
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-white/40 backdrop-blur-sm border-olive-900/10 hover:bg-white/80"
+                className="bg-white/40 backdrop-blur-sm border-[#0f4c3a]/20 hover:bg-white/80 text-[#1a202c]"
                 onClick={() => console.log('View Lookbook clicked')}
               >
                 View Lookbook
@@ -161,7 +168,7 @@ export default function HeroSection() {
       </div>
 
       {/* Decorative Overlay Gradient (Bottom) */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-cream to-transparent pointer-events-none z-10"></div>
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#f9f9f5] to-transparent pointer-events-none z-10"></div>
     </section>
   );
 }

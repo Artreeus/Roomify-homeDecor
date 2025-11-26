@@ -1,9 +1,16 @@
-import React, { useRef } from 'react';
+'use client';
+
+import { useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
 // --- Reusable Logic for Floating Animation ---
-function useFloat(ref: React.RefObject<THREE.Object3D>, speed: number, amplitude: number, offset: number) {
+function useFloat(
+  ref: React.RefObject<THREE.Mesh | null>,
+  speed: number,
+  amplitude: number,
+  offset: number
+) {
   useFrame((state) => {
     if (ref.current) {
       const t = state.clock.getElapsedTime();
@@ -56,7 +63,7 @@ function FloatingOrb({ position, scale }: { position: [number, number, number]; 
 
 function ArchitecturalRing({ position }: { position: [number, number, number] }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  
+
   useFrame((state) => {
     if (meshRef.current) {
       meshRef.current.rotation.z += 0.001;
@@ -90,7 +97,7 @@ function Scene() {
   return (
     <>
       <CameraRig />
-      
+
       {/* Lighting Setup for "Studio" Look */}
       <ambientLight intensity={0.5} />
       <spotLight
@@ -102,7 +109,7 @@ function Scene() {
         shadow-mapSize={[2048, 2048]}
       />
       <pointLight position={[-10, -10, -10]} intensity={0.5} color="#D4AF37" />
-      
+
       {/* Objects */}
       <group position={[1, 0, 0]}>
         <AbstractVase position={[1.5, 0.5, 0]} color="#8FA89B" /> {/* Sage Green tone */}
@@ -110,7 +117,7 @@ function Scene() {
         <FloatingOrb position={[2.5, -2, -2]} scale={0.4} />
         <ArchitecturalRing position={[0, 0, -2]} />
       </group>
-      
+
       {/* Background fill (optional, if canvas is transparent this isn't needed, but adds depth) */}
       <fog attach="fog" args={['#F9F9F5', 5, 20]} />
     </>
