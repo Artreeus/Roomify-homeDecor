@@ -123,7 +123,7 @@ export default function FeaturedCollection() {
   }, []);
 
   return (
-    <section id="collection" className="py-32 bg-gradient-to-b from-white to-[#f9f9f5] relative overflow-hidden">
+    <section id="collection" className="py-16 bg-gradient-to-b from-white to-[#f9f9f5] relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-[#d4af37]/5 rounded-full blur-3xl"></div>
@@ -131,21 +131,21 @@ export default function FeaturedCollection() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-20">
+        <div className="text-center mb-16 md:mb-20">
           <h2
             ref={headingRef}
-            className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-[#1a202c] mb-6"
+            className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold text-[#1a202c] mb-4 md:mb-6"
           >
             Featured Collection
           </h2>
-          <p className="text-xl text-[#1a202c]/70 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-[#1a202c]/70 max-w-3xl mx-auto leading-relaxed">
             Handpicked pieces that bring elegance and sophistication to every corner of your home
           </p>
         </div>
 
         {products.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
               {products.map((product, index) => (
                 <ProductCard key={product.id} product={product} index={index} />
               ))}

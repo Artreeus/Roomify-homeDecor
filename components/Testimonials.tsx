@@ -54,18 +54,18 @@ export default function Testimonials() {
   }, [testimonials]);
 
   return (
-    <section className="py-24 bg-[#f9f9f5]">
+    <section className="py-16 bg-[#f9f9f5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#1a202c] mb-4">
+        <div className="text-center mb-16 md:mb-20">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#1a202c] mb-4 md:mb-6">
             What Our Customers Say
           </h2>
-          <p className="text-lg text-[#1a202c]/60 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-[#1a202c]/60 max-w-2xl mx-auto leading-relaxed">
             Join thousands of happy homeowners who transformed their spaces with Roomify
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {testimonials.map((testimonial, index) => (
             <Card
               key={testimonial.id}

@@ -6,8 +6,9 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowRight, Calendar, Mail, Sparkles, Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
+import { ArrowRight, Calendar, Mail, Sparkles, Facebook, Instagram, Twitter, Linkedin, X } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -17,30 +18,109 @@ if (typeof window !== 'undefined') {
 
 const lookbookImages = [
   {
-    url: 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800',
+    url: 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=1200',
     alt: 'Modern living room',
+    title: 'Modern Living',
+    subtitle: 'Contemporary elegance',
     span: 'col-span-2 row-span-2',
+    featured: true,
   },
   {
-    url: 'https://images.pexels.com/photos/1648776/pexels-photo-1648776.jpeg?auto=compress&cs=tinysrgb&w=800',
+    url: 'https://images.pexels.com/photos/1648776/pexels-photo-1648776.jpeg?auto=compress&cs=tinysrgb&w=1200',
     alt: 'Elegant bedroom',
+    title: 'Serene Bedroom',
+    subtitle: 'Peaceful retreat',
     span: 'col-span-1 row-span-1',
+    featured: false,
   },
   {
-    url: 'https://images.pexels.com/photos/2062431/pexels-photo-2062431.jpeg?auto=compress&cs=tinysrgb&w=800',
+    url: 'https://images.pexels.com/photos/2062431/pexels-photo-2062431.jpeg?auto=compress&cs=tinysrgb&w=1200',
     alt: 'Stylish dining',
+    title: 'Dining Space',
+    subtitle: 'Gather & dine',
     span: 'col-span-1 row-span-1',
+    featured: false,
   },
   {
-    url: 'https://images.pexels.com/photos/3932930/pexels-photo-3932930.jpeg?auto=compress&cs=tinysrgb&w=800',
+    url: 'https://images.pexels.com/photos/3932930/pexels-photo-3932930.jpeg?auto=compress&cs=tinysrgb&w=1200',
     alt: 'Cozy nook',
+    title: 'Cozy Corner',
+    subtitle: 'Reading nook',
     span: 'col-span-1 row-span-2',
+    featured: false,
   },
   {
-    url: 'https://images.pexels.com/photos/2251247/pexels-photo-2251247.jpeg?auto=compress&cs=tinysrgb&w=800',
+    url: 'https://images.pexels.com/photos/2251247/pexels-photo-2251247.jpeg?auto=compress&cs=tinysrgb&w=1200',
     alt: 'Workspace',
-    span: 'col-span-2 row-span-1',
+    title: 'Home Office',
+    subtitle: 'Productive space',
+    span: 'col-span-1 row-span-1',
+    featured: false,
   },
+  {
+    url: 'https://images.pexels.com/photos/1571453/pexels-photo-1571453.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    alt: 'Kitchen design',
+    title: 'Modern Kitchen',
+    subtitle: 'Culinary haven',
+    span: 'col-span-1 row-span-1',
+    featured: false,
+  },
+  {
+    url: 'https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    alt: 'Bathroom design',
+    title: 'Spa Bathroom',
+    subtitle: 'Luxury relaxation',
+    span: 'col-span-1 row-span-1',
+    featured: false,
+  },
+  {
+    url: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    alt: 'Outdoor space',
+    title: 'Outdoor Living',
+    subtitle: 'Nature meets design',
+    span: 'col-span-1 row-span-1',
+    featured: false,
+  },
+  {
+    url: 'https://images.pexels.com/photos/1571468/pexels-photo-1571468.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    alt: 'Luxury bedroom',
+    title: 'Luxury Suite',
+    subtitle: 'Elegant comfort',
+    span: 'col-span-1 row-span-1',
+    featured: false,
+  },
+  {
+    url: 'https://images.pexels.com/photos/1571463/pexels-photo-1571463.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    alt: 'Stylish entryway',
+    title: 'Grand Entryway',
+    subtitle: 'First impressions',
+    span: 'col-span-2 row-span-1',
+    featured: false,
+  },
+  {
+    url: 'https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    alt: 'Modern workspace',
+    title: 'Creative Studio',
+    subtitle: 'Inspired workspace',
+    span: 'col-span-1 row-span-1',
+    featured: false,
+  },
+  {
+    url: 'https://images.pexels.com/photos/1571462/pexels-photo-1571462.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    alt: 'Cozy living',
+    title: 'Family Room',
+    subtitle: 'Together time',
+    span: 'col-span-1 row-span-1',
+    featured: false,
+  },
+  {
+    url: 'https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    alt: 'Stylish lounge',
+    title: 'Lounge Area',
+    subtitle: 'Relax & unwind',
+    span: 'col-span-1 row-span-1',
+    featured: false,
+  }
 ];
 
 const journalPosts = [
@@ -69,19 +149,42 @@ const journalPosts = [
 
 export function Lookbook() {
   const imagesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [selectedImage, setSelectedImage] = useState<typeof lookbookImages[0] | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
+    if (headingRef.current) {
+      gsap.fromTo(
+        headingRef.current,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    }
+
     imagesRef.current.forEach((image, index) => {
       if (image) {
         gsap.fromTo(
           image,
-          { opacity: 0, scale: 0.8 },
+          { opacity: 0, scale: 0.9, y: 30 },
           {
             opacity: 1,
             scale: 1,
+            y: 0,
             duration: 0.8,
-            delay: index * 0.1,
-            ease: 'power3.out',
+            delay: index * 0.08,
+            ease: 'back.out(1.2)',
             scrollTrigger: {
               trigger: image,
               start: 'top 85%',
@@ -93,35 +196,113 @@ export function Lookbook() {
     });
   }, []);
 
+  const handleImageClick = (image: typeof lookbookImages[0]) => {
+    setSelectedImage(image);
+    setDialogOpen(true);
+  };
+
   return (
-    <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#1a202c] mb-4">Lookbook</h2>
-          <p className="text-lg text-[#1a202c]/60 max-w-2xl mx-auto">
+    <section ref={containerRef} className="py-16 bg-gradient-to-b from-white to-[#f9f9f5] relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 right-10 w-96 h-96 bg-[#d4af37]/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-[#0f4c3a]/5 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center mb-16 md:mb-20">
+          <h2
+            ref={headingRef}
+            className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold text-[#1a202c] mb-4 md:mb-6"
+          >
+            Lookbook
+          </h2>
+          <p className="text-lg md:text-xl text-[#1a202c]/70 max-w-3xl mx-auto leading-relaxed">
             Real homes, real stories. See how our pieces come to life in beautifully curated spaces
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-[280px] gap-4">
+        {/* Bento Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 auto-rows-[200px] gap-4 md:gap-6 min-h-[800px]">
           {lookbookImages.map((image, index) => (
             <div
               key={index}
               ref={(el) => {
                 imagesRef.current[index] = el;
               }}
-              className={`${image.span} relative overflow-hidden rounded-2xl group cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300`}
+              onClick={() => handleImageClick(image)}
+              className={`${image.span} relative overflow-hidden rounded-2xl group cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1`}
             >
               <Image
                 src={image.url}
                 alt={image.alt}
                 fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                className="object-cover group-hover:scale-110 transition-transform duration-700"
               />
+
+              {/* Featured Badge */}
+              {image.featured && (
+                <div className="absolute top-4 left-4 bg-[#d4af37] text-[#1a202c] px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide z-10">
+                  Featured
+                </div>
+              )}
+
+              {/* Click Indicator */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl flex items-center justify-center">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 backdrop-blur-sm rounded-full p-3">
+                  <ArrowRight className="w-6 h-6 text-[#0f4c3a]" />
+                </div>
+              </div>
             </div>
           ))}
         </div>
+
+        {/* View More CTA */}
+        <div className="mt-12 md:mt-16 text-center">
+          <Button
+            variant="outline"
+            size="lg"
+            className="border-2 border-[#0f4c3a] text-[#0f4c3a] hover:bg-[#0f4c3a] hover:text-white rounded-full px-8 py-6 text-lg group"
+          >
+            View Full Gallery
+            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
+          </Button>
+        </div>
       </div>
+
+      {/* Image Detail Modal */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto p-0 gap-0">
+          {selectedImage && (
+            <>
+              <div className="relative w-full h-[60vh] min-h-[400px]">
+                <Image
+                  src={selectedImage.url}
+                  alt={selectedImage.alt}
+                  fill
+                  className="object-cover"
+                />
+                {selectedImage.featured && (
+                  <div className="absolute top-4 left-4 bg-[#d4af37] text-[#1a202c] px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide">
+                    Featured
+                  </div>
+                )}
+              </div>
+              <DialogHeader className="p-6 md:p-8">
+                <DialogTitle className="text-3xl md:text-4xl font-bold text-[#1a202c] mb-2">
+                  {selectedImage.title}
+                </DialogTitle>
+                <DialogDescription className="text-lg md:text-xl text-[#1a202c]/70 mb-4">
+                  {selectedImage.subtitle}
+                </DialogDescription>
+                <p className="text-[#1a202c]/60 leading-relaxed">
+                  {selectedImage.alt}
+                </p>
+              </DialogHeader>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
@@ -153,18 +334,18 @@ export function DesignJournal() {
   }, []);
 
   return (
-    <section id="journal" className="py-24 bg-[#f9f9f5]">
+    <section id="journal" className="py-16 bg-[#f9f9f5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#1a202c] mb-4">
+        <div className="text-center mb-16 md:mb-20">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#1a202c] mb-4 md:mb-6">
             The Design Journal
           </h2>
-          <p className="text-lg text-[#1a202c]/60 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-[#1a202c]/60 max-w-2xl mx-auto leading-relaxed">
             Inspiration, tips, and stories from the world of modern home design
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
           {journalPosts.map((post, index) => (
             <Card
               key={post.title}
@@ -258,9 +439,9 @@ export function AboutSection() {
   }, []);
 
   return (
-    <section id="about" className="py-24 bg-white">
+    <section id="about" className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
           <div ref={textRef}>
             <h2 className="text-4xl md:text-5xl font-bold text-[#1a202c] mb-6">
               About Roomify
@@ -313,15 +494,15 @@ export function Newsletter() {
   };
 
   return (
-    <section id="contact" className="py-24 bg-gradient-to-br from-[#0f4c3a] to-[#0a3829]">
+    <section id="contact" className="py-16 bg-gradient-to-br from-[#0f4c3a] to-[#0a3829]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl mb-6">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl mb-6 md:mb-8">
           <Mail className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 md:mb-6">
           Join the Decor Circle
         </h2>
-        <p className="text-lg text-white/80 mb-10 max-w-2xl mx-auto">
+        <p className="text-lg md:text-xl text-white/80 mb-10 md:mb-12 max-w-2xl mx-auto leading-relaxed">
           Get exclusive access to new collections, design tips, and special offers delivered to your inbox
         </p>
 
