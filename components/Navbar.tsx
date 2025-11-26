@@ -11,6 +11,8 @@ export default function Navbar() {
   const [activeLink, setActiveLink] = useState('');
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
       

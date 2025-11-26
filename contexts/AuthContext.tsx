@@ -37,12 +37,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored admin session in localStorage
-    const storedAdmin = localStorage.getItem('admin_session');
-    if (storedAdmin === 'true') {
-      setUser(createMockAdminUser());
-      setLoading(false);
-      return;
+    // Check for stored admin session in localStorage (client-side only)
+    if (typeof window !== 'undefined') {
+      const storedAdmin = localStorage.getItem('admin_session');
+      if (storedAdmin === 'true') {
+        setUser(createMockAdminUser());
+        setLoading(false);
+        return;
+      }
     }
 
     // Fallback to Supabase session check
@@ -65,13 +67,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       const mockUser = createMockAdminUser();
       setUser(mockUser);
-      localStorage.setItem('admin_session', 'true');
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('admin_session', 'true');
+      }
       return { error: null };
     }
 
     // Fallback to Supabase authentication
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (!error) {
+    if (!error && typeof window !== 'undefined') {
       localStorage.removeItem('admin_session');
     }
     return { error };
@@ -79,7 +83,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     // Clear admin session
-    localStorage.removeItem('admin_session');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('admin_session');
+    }
     setUser(null);
     // Also sign out from Supabase if there's a session
     await supabase.auth.signOut();
