@@ -257,17 +257,7 @@ export function Lookbook() {
           ))}
         </div>
 
-        {/* View More CTA */}
-        <div className="mt-12 md:mt-16 text-center">
-          <Button
-            variant="outline"
-            size="lg"
-            className="border-2 border-[#0f4c3a] text-[#0f4c3a] hover:bg-[#0f4c3a] hover:text-white rounded-full px-8 py-6 text-lg group"
-          >
-            View Full Gallery
-            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
-          </Button>
-        </div>
+
       </div>
 
       {/* Image Detail Modal */}
