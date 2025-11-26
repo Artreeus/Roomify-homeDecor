@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowRight, Calendar, Mail, Sparkles, Facebook, Instagram, Twitter, Linkedin, X, Clock, BookOpen } from 'lucide-react';
+import { ArrowRight, Calendar, Mail, Sparkles, Facebook, Instagram, Twitter, Linkedin, X, Clock, BookOpen, Award, Users, Heart, Target } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -522,12 +522,21 @@ export function DesignJournal() {
 export function AboutSection() {
   const textRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const stats = [
+    { icon: Users, value: '10K+', label: 'Happy Customers', color: 'from-blue-500 to-indigo-600' },
+    { icon: Award, value: '500+', label: 'Curated Products', color: 'from-amber-500 to-orange-600' },
+    { icon: Heart, value: '98%', label: 'Satisfaction Rate', color: 'from-rose-500 to-red-600' },
+    { icon: Target, value: '15+', label: 'Years Experience', color: 'from-green-500 to-emerald-600' },
+  ];
 
   useEffect(() => {
     if (textRef.current) {
       gsap.fromTo(
         textRef.current,
-        { x: -100, opacity: 0 },
+        { x: -60, opacity: 0 },
         {
           x: 0,
           opacity: 1,
@@ -545,10 +554,11 @@ export function AboutSection() {
     if (imageRef.current) {
       gsap.fromTo(
         imageRef.current,
-        { x: 100, opacity: 0 },
+        { x: 60, opacity: 0, scale: 0.95 },
         {
           x: 0,
           opacity: 1,
+          scale: 1,
           duration: 1,
           ease: 'power3.out',
           scrollTrigger: {
@@ -559,18 +569,57 @@ export function AboutSection() {
         }
       );
     }
+
+    statsRef.current.forEach((stat, index) => {
+      if (stat) {
+        gsap.fromTo(
+          stat,
+          { y: 40, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            delay: index * 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: stat,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
+      }
+    });
   }, []);
 
   return (
-    <section id="about" className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
-          <div ref={textRef}>
-            <h2 className="text-4xl md:text-5xl font-bold text-[#1a202c] mb-6">
-              About Roomify
-            </h2>
-            <div className="space-y-4 text-lg text-[#1a202c]/70 leading-relaxed">
-              <p>
+    <section ref={containerRef} id="about" className="py-16 bg-gradient-to-b from-white to-[#f9f9f5] relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 right-10 w-96 h-96 bg-[#d4af37]/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-[#0f4c3a]/5 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Header */}
+        <div className="text-center mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0f4c3a]/10 text-[#0f4c3a] text-sm font-semibold uppercase tracking-wide mb-6">
+            <Sparkles className="w-4 h-4" />
+            <span>Our Story</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-[#1a202c] mb-4 md:mb-6">
+            About Roomify
+          </h2>
+          <p className="text-lg md:text-xl text-[#1a202c]/70 max-w-3xl mx-auto leading-relaxed">
+            Crafting beautiful spaces, one piece at a time
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center mb-16">
+          {/* Text Content */}
+          <div ref={textRef} className="space-y-6">
+            <div className="space-y-5 text-lg md:text-xl text-[#1a202c]/70 leading-relaxed">
+              <p className="text-xl md:text-2xl font-semibold text-[#1a202c]">
                 Founded with a passion for bringing modern aesthetics to everyday homes, Roomify curates exceptional pieces that blend timeless design with contemporary living.
               </p>
               <p>
@@ -579,22 +628,59 @@ export function AboutSection() {
               <p>
                 From sustainable materials to artisan craftsmanship, we partner with makers who share our commitment to quality and environmental responsibility. Each product tells a story of dedication, skill, and respect for both craft and planet.
               </p>
-              <p className="text-[#0f4c3a] font-medium pt-4">
+            </div>
+            
+            <div className="pt-4 border-t border-[#0f4c3a]/10">
+              <p className="text-2xl font-bold text-[#0f4c3a] mb-2">
                 Transform your space. Elevate your everyday.
+              </p>
+              <p className="text-[#1a202c]/60">
+                Join thousands of homeowners who have discovered the Roomify difference
               </p>
             </div>
           </div>
 
-          <div ref={imageRef} className="relative">
-            <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-2xl">
+          {/* Image */}
+          <div ref={imageRef} className="relative group">
+            <div className="relative h-[500px] md:h-[600px] rounded-2xl overflow-hidden shadow-2xl">
               <Image
                 src="https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=1200"
                 alt="Roomify showroom"
                 fill
-                className="object-cover"
+                className="object-cover group-hover:scale-110 transition-transform duration-700"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </div>
+            {/* Decorative elements */}
+            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#d4af37]/20 rounded-full blur-2xl -z-10"></div>
+            <div className="absolute -top-6 -left-6 w-24 h-24 bg-[#0f4c3a]/20 rounded-full blur-2xl -z-10"></div>
           </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <div
+                key={stat.label}
+                ref={(el) => {
+                  statsRef.current[index] = el;
+                }}
+                className="group text-center p-6 md:p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#0f4c3a]/5"
+              >
+                <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br ${stat.color} text-white rounded-xl mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg`}>
+                  <Icon className="w-8 h-8" />
+                </div>
+                <div className="text-3xl md:text-4xl font-bold text-[#1a202c] mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-sm md:text-base text-[#1a202c]/60 font-medium">
+                  {stat.label}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
