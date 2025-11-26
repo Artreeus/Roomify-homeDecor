@@ -21,6 +21,7 @@ export default function AdminPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState('content');
 
   const [headline, setHeadline] = useState('');
   const [subtext, setSubtext] = useState('');
@@ -173,20 +174,31 @@ export default function AdminPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs defaultValue="content" className="space-y-8">
-          <TabsList className="bg-white border border-[#0f4c3a]/10 p-1">
-            <TabsTrigger value="content" className="data-[state=active]:bg-[#0f4c3a] data-[state=active]:text-white">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+          <TabsList className="bg-white border border-[#0f4c3a]/10 p-1 rounded-lg">
+            <TabsTrigger 
+              value="content" 
+              className="data-[state=active]:bg-[#0f4c3a] data-[state=active]:text-white rounded-md px-6"
+            >
               Hero Content
             </TabsTrigger>
-            <TabsTrigger value="products" className="data-[state=active]:bg-[#0f4c3a] data-[state=active]:text-white">
+            <TabsTrigger 
+              value="products" 
+              className="data-[state=active]:bg-[#0f4c3a] data-[state=active]:text-white rounded-md px-6"
+            >
               Products
             </TabsTrigger>
-            <TabsTrigger value="testimonials" className="data-[state=active]:bg-[#0f4c3a] data-[state=active]:text-white">
+            <TabsTrigger 
+              value="testimonials" 
+              className="data-[state=active]:bg-[#0f4c3a] data-[state=active]:text-white rounded-md px-6"
+            >
               Testimonials
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="content">
+          <div className="relative">
+            <TabsContent value="content" className="mt-8" forceMount>
+              <div className={activeTab === 'content' ? 'block' : 'hidden'}>
             <Card className="border-[#0f4c3a]/10 shadow-lg">
               <CardHeader>
                 <CardTitle className="text-2xl text-[#1a202c]">Hero Section Content</CardTitle>
@@ -218,9 +230,11 @@ export default function AdminPage() {
                 </Button>
               </CardContent>
             </Card>
-          </TabsContent>
+              </div>
+            </TabsContent>
 
-          <TabsContent value="products">
+            <TabsContent value="products" className="mt-8" forceMount>
+              <div className={activeTab === 'products' ? 'block' : 'hidden'}>
             <Card className="border-[#0f4c3a]/10 shadow-lg">
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -300,7 +314,7 @@ export default function AdminPage() {
                       <CardContent className="p-4">
                         <h3 className="font-semibold text-[#1a202c] mb-1">{product.title}</h3>
                         <p className="text-sm text-[#0f4c3a] mb-2">{product.category}</p>
-                        <p className="text-lg font-bold text-[#d4af37] mb-3">${product.price.toFixed(2)}</p>
+                        <p className="text-lg font-bold text-[#d4af37] mb-3">BDT {product.price.toFixed(2)}</p>
                         <div className="flex gap-2">
                           <Button
                             size="sm"
@@ -339,9 +353,11 @@ export default function AdminPage() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+              </div>
+            </TabsContent>
 
-          <TabsContent value="testimonials">
+            <TabsContent value="testimonials" className="mt-8" forceMount>
+              <div className={activeTab === 'testimonials' ? 'block' : 'hidden'}>
             <Card className="border-[#0f4c3a]/10 shadow-lg">
               <CardHeader>
                 <CardTitle className="text-2xl text-[#1a202c]">Testimonials</CardTitle>
@@ -365,7 +381,9 @@ export default function AdminPage() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+              </div>
+            </TabsContent>
+          </div>
         </Tabs>
       </main>
     </div>

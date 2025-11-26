@@ -4,12 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { supabase, Product } from '@/lib/supabase';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowLeft, Filter } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Footer } from '@/components/AllSections';
 
 if (typeof window !== 'undefined') {
@@ -23,11 +22,12 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
     if (cardRef.current) {
       gsap.fromTo(
         cardRef.current,
-        { y: 100, opacity: 0 },
+        { y: 60, opacity: 0, scale: 0.9 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
+          scale: 1,
+          duration: 0.6,
           delay: index * 0.05,
           ease: 'power3.out',
           scrollTrigger: {
@@ -41,72 +41,86 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
   }, [index]);
 
   return (
-    <Card
+    <div
       ref={cardRef}
-      className="group overflow-hidden border-none shadow-lg hover:shadow-2xl transition-all duration-300 bg-white"
+      className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 w-full h-[520px] flex flex-col"
     >
-      <CardContent className="p-0">
-        <div className="relative h-80 overflow-hidden bg-[#f9f9f5]">
-          <Image
-            src={product.image_url}
-            alt={product.title}
-            fill
-            className="object-cover group-hover:scale-110 transition-transform duration-500"
-          />
-        </div>
-        <div className="p-6">
-          <p className="text-sm text-[#0f4c3a] font-medium uppercase tracking-wider mb-2">
+      <div className="relative h-80 w-full overflow-hidden bg-gradient-to-br from-[#f9f9f5] to-[#ebe9dd] flex-shrink-0">
+        <Image
+          src={product.image_url}
+          alt={product.title}
+          fill
+          className="object-cover group-hover:scale-110 transition-transform duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute top-4 right-4">
+          <span className="bg-white/90 backdrop-blur-sm text-[#0f4c3a] px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
             {product.category}
-          </p>
-          <h3 className="text-xl font-semibold text-[#1a202c] mb-3 group-hover:text-[#0f4c3a] transition-colors">
-            {product.title}
-          </h3>
-          {product.description && (
-            <p className="text-sm text-[#1a202c]/60 mb-3 line-clamp-2">
-              {product.description}
-            </p>
-          )}
-          <p className="text-2xl font-bold text-[#d4af37]">
-            ${product.price.toFixed(2)}
-          </p>
+          </span>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+      <div className="p-6 flex flex-col flex-grow">
+        <h3 className="text-xl font-bold text-[#1a202c] mb-2 group-hover:text-[#0f4c3a] transition-colors line-clamp-2 min-h-[3.5rem]">
+          {product.title}
+        </h3>
+        {product.description && (
+          <p className="text-sm text-[#1a202c]/60 mb-4 line-clamp-2 flex-grow">
+            {product.description}
+          </p>
+        )}
+        <div className="flex items-center justify-between mt-auto">
+          <p className="text-2xl font-bold text-[#d4af37]">
+            BDT {product.price.toFixed(2)}
+          </p>
+          <Button
+            size="sm"
+            className="bg-[#0f4c3a] hover:bg-[#0f4c3a]/90 text-white rounded-full px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            View
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [categories, setCategories] = useState<string[]>([]);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
+  // Fetch all products and categories on mount
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      let query = supabase
+    const fetchAllProducts = async () => {
+      const { data } = await supabase
         .from('products')
         .select('*')
         .order('sort_order', { ascending: true });
 
-      if (selectedCategory !== 'all') {
-        query = query.eq('category', selectedCategory);
-      }
-
-      const { data } = await query;
-
       if (data) {
-        setProducts(data);
-        // Extract unique categories
+        setAllProducts(data);
+        // Extract unique categories from ALL products
         const uniqueCategories = Array.from(new Set(data.map((p) => p.category)));
         setCategories(uniqueCategories);
       }
-      setLoading(false);
     };
 
-    fetchProducts();
-  }, [selectedCategory]);
+    fetchAllProducts();
+  }, []);
+
+  // Filter products based on selected category
+  useEffect(() => {
+    setLoading(true);
+    if (selectedCategory === 'all') {
+      setProducts(allProducts);
+    } else {
+      setProducts(allProducts.filter(p => p.category === selectedCategory));
+    }
+    setLoading(false);
+  }, [selectedCategory, allProducts]);
 
   useEffect(() => {
     if (headingRef.current) {
@@ -128,16 +142,22 @@ export default function ProductsPage() {
     : products.filter(p => p.category === selectedCategory);
 
   return (
-    <main className="min-h-screen bg-[#f9f9f5]">
+    <main className="min-h-screen bg-gradient-to-b from-white to-[#f9f9f5]">
       <Navbar />
       
-      <section className="pt-32 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="pt-32 pb-20 relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-[#d4af37]/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#0f4c3a]/5 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Back Button */}
           <Link href="/">
             <Button
               variant="ghost"
-              className="mb-8 text-[#0f4c3a] hover:text-[#0f4c3a]/80 hover:bg-[#0f4c3a]/10"
+              className="mb-8 text-[#0f4c3a] hover:text-[#0f4c3a]/80 hover:bg-[#0f4c3a]/10 rounded-full"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
@@ -145,28 +165,28 @@ export default function ProductsPage() {
           </Link>
 
           {/* Header */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
             <h1
               ref={headingRef}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#1a202c] mb-4"
+              className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-[#1a202c] mb-6"
             >
               All Products
             </h1>
-            <p className="text-lg text-[#1a202c]/60 max-w-2xl mx-auto">
+            <p className="text-xl text-[#1a202c]/70 max-w-3xl mx-auto leading-relaxed">
               Discover our complete collection of handcrafted home decor pieces
             </p>
           </div>
 
-          {/* Category Filter */}
+          {/* Category Filter - Always show all categories */}
           {categories.length > 0 && (
-            <div className="mb-12 flex flex-wrap justify-center gap-4">
+            <div className="mb-16 flex flex-wrap justify-center gap-3">
               <Button
                 variant={selectedCategory === 'all' ? 'default' : 'outline'}
                 onClick={() => setSelectedCategory('all')}
                 className={
                   selectedCategory === 'all'
-                    ? 'bg-[#0f4c3a] text-white hover:bg-[#0f4c3a]/90'
-                    : 'border-[#0f4c3a] text-[#0f4c3a] hover:bg-[#0f4c3a]/10'
+                    ? 'bg-[#0f4c3a] text-white hover:bg-[#0f4c3a]/90 rounded-full px-6'
+                    : 'border-[#0f4c3a] text-[#0f4c3a] hover:bg-[#0f4c3a]/10 rounded-full px-6'
                 }
               >
                 All Products
@@ -178,8 +198,8 @@ export default function ProductsPage() {
                   onClick={() => setSelectedCategory(category)}
                   className={
                     selectedCategory === category
-                      ? 'bg-[#0f4c3a] text-white hover:bg-[#0f4c3a]/90'
-                      : 'border-[#0f4c3a] text-[#0f4c3a] hover:bg-[#0f4c3a]/10'
+                      ? 'bg-[#0f4c3a] text-white hover:bg-[#0f4c3a]/90 rounded-full px-6'
+                      : 'border-[#0f4c3a] text-[#0f4c3a] hover:bg-[#0f4c3a]/10 rounded-full px-6'
                   }
                 >
                   {category}
@@ -194,25 +214,25 @@ export default function ProductsPage() {
               {[...Array(8)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-lg shadow-lg h-96 animate-pulse"
+                  className="bg-white rounded-2xl shadow-md h-[500px] animate-pulse overflow-hidden"
                 >
-                  <div className="h-64 bg-gray-200 rounded-t-lg"></div>
+                  <div className="h-80 bg-gradient-to-br from-gray-200 to-gray-300"></div>
                   <div className="p-6 space-y-3">
-                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-4 bg-gray-200 rounded-full w-1/2"></div>
                     <div className="h-6 bg-gray-200 rounded w-3/4"></div>
                     <div className="h-6 bg-gray-200 rounded w-1/3"></div>
                   </div>
                 </div>
               ))}
             </div>
-          ) : filteredProducts.length > 0 ? (
+          ) : products.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {filteredProducts.map((product, index) => (
+              {products.map((product, index) => (
                 <ProductCard key={product.id} product={product} index={index} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
+            <div className="text-center py-20">
               <p className="text-xl text-[#1a202c]/60">
                 No products found in this category.
               </p>
