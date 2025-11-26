@@ -1,125 +1,131 @@
-'use client';
-
-import { useRef, useState, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import React, { useRef } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
-function FloatingTorus({ position }: { position: [number, number, number] }) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const timeRef = useRef(0);
-
-  useFrame((state, delta) => {
-    if (meshRef.current) {
-      timeRef.current += delta;
-      meshRef.current.rotation.y += 0.005;
-      meshRef.current.rotation.x += 0.003;
-      meshRef.current.position.y = position[1] + Math.sin(timeRef.current * 0.5) * 0.3;
+// --- Reusable Logic for Floating Animation ---
+function useFloat(ref: React.RefObject<THREE.Object3D>, speed: number, amplitude: number, offset: number) {
+  useFrame((state) => {
+    if (ref.current) {
+      const t = state.clock.getElapsedTime();
+      ref.current.position.y += Math.sin(t * speed + offset) * 0.002;
+      ref.current.rotation.x = Math.sin(t * (speed * 0.5) + offset) * (amplitude * 0.1);
+      ref.current.rotation.y += 0.002;
     }
   });
+}
+
+// --- 3D Components ---
+
+function AbstractVase({ position, color }: { position: [number, number, number]; color: string }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  useFloat(meshRef, 0.8, 0.2, 0);
 
   return (
-    <mesh ref={meshRef} position={position}>
-      <torusGeometry args={[1, 0.4, 16, 100]} />
-      <meshStandardMaterial
-        color="#d4af37"
-        metalness={0.8}
-        roughness={0.2}
-        opacity={0.3}
-        transparent={true}
+    <mesh ref={meshRef} position={position} castShadow receiveShadow>
+      {/* A Lathe geometry to create a vase-like shape */}
+      <torusKnotGeometry args={[0.8, 0.25, 128, 16]} />
+      <meshPhysicalMaterial
+        color={color}
+        roughness={0.15}
+        metalness={0.1}
+        transmission={0.2} // Slight glass feel
+        thickness={2}
+        clearcoat={1}
+        clearcoatRoughness={0.1}
       />
     </mesh>
   );
 }
 
-function FloatingSphere({ position }: { position: [number, number, number] }) {
+function FloatingOrb({ position, scale }: { position: [number, number, number]; scale: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const timeRef = useRef(0);
-
-  useFrame((state, delta) => {
-    if (meshRef.current) {
-      timeRef.current += delta;
-      meshRef.current.rotation.y += 0.004;
-      meshRef.current.rotation.x += 0.002;
-      meshRef.current.position.y = position[1] + Math.sin(timeRef.current * 0.7) * 0.25;
-    }
-  });
+  useFloat(meshRef, 0.5, 0.1, 2);
 
   return (
-    <mesh ref={meshRef} position={position}>
-      <sphereGeometry args={[0.8, 32, 32]} />
-      <meshStandardMaterial
-        color="#0f4c3a"
-        metalness={0.6}
-        roughness={0.3}
-        opacity={0.3}
-        transparent={true}
+    <mesh ref={meshRef} position={position} scale={scale} castShadow>
+      <sphereGeometry args={[1, 64, 64]} />
+      <meshPhysicalMaterial
+        color="#ffffff"
+        roughness={0.4}
+        metalness={0.1}
+        transmission={0.1}
       />
     </mesh>
   );
 }
 
-function FloatingCylinder({ position }: { position: [number, number, number] }) {
+function ArchitecturalRing({ position }: { position: [number, number, number] }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const timeRef = useRef(0);
-
-  useFrame((state, delta) => {
+  
+  useFrame((state) => {
     if (meshRef.current) {
-      timeRef.current += delta;
-      meshRef.current.rotation.y += 0.006;
-      meshRef.current.rotation.z += 0.002;
-      meshRef.current.position.y = position[1] + Math.sin(timeRef.current * 0.6) * 0.2;
+      meshRef.current.rotation.z += 0.001;
+      meshRef.current.rotation.x = Math.sin(state.clock.getElapsedTime() * 0.2) * 0.2;
     }
   });
 
   return (
-    <mesh ref={meshRef} position={position}>
-      <cylinderGeometry args={[0.5, 0.5, 1.5, 32]} />
-      <meshStandardMaterial
-        color="#d4af37"
-        metalness={0.7}
-        roughness={0.25}
-        opacity={0.3}
-        transparent={true}
-      />
+    <mesh ref={meshRef} position={position} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
+      <torusGeometry args={[3.5, 0.05, 16, 100]} />
+      <meshStandardMaterial color="#D4AF37" metalness={0.8} roughness={0.2} />
     </mesh>
   );
+}
+
+// --- Rig for subtle mouse interaction ---
+function CameraRig() {
+  const { camera, pointer } = useThree();
+  const vec = new THREE.Vector3();
+
+  useFrame(() => {
+    // Smoothly interpolate camera position based on mouse pointer
+    // We keep the original Z position (8) and modify x/y slightly
+    camera.position.lerp(vec.set(pointer.x * 0.5, pointer.y * 0.5, 8), 0.05);
+    camera.lookAt(0, 0, 0);
+  });
+  return null;
 }
 
 function Scene() {
   return (
     <>
-      <ambientLight intensity={0.4} />
-      <directionalLight
-        position={[5, 5, 5]}
-        intensity={0.8}
+      <CameraRig />
+      
+      {/* Lighting Setup for "Studio" Look */}
+      <ambientLight intensity={0.5} />
+      <spotLight
+        position={[10, 10, 10]}
+        angle={0.15}
+        penumbra={1}
+        intensity={1}
+        castShadow
+        shadow-mapSize={[2048, 2048]}
       />
-      <pointLight position={[-5, 5, -5]} intensity={0.3} color="#d4af37" />
-
-      <FloatingTorus position={[-3, 0, -4]} />
-      <FloatingSphere position={[3.5, 1, -5]} />
-      <FloatingCylinder position={[0, -1.5, -4.5]} />
+      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#D4AF37" />
+      
+      {/* Objects */}
+      <group position={[1, 0, 0]}>
+        <AbstractVase position={[1.5, 0.5, 0]} color="#8FA89B" /> {/* Sage Green tone */}
+        <FloatingOrb position={[-2, -1, 1]} scale={0.6} />
+        <FloatingOrb position={[2.5, -2, -2]} scale={0.4} />
+        <ArchitecturalRing position={[0, 0, -2]} />
+      </group>
+      
+      {/* Background fill (optional, if canvas is transparent this isn't needed, but adds depth) */}
+      <fog attach="fog" args={['#F9F9F5', 5, 20]} />
     </>
   );
 }
 
 export default function Hero3D() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <div className="absolute inset-0 w-full h-full" />;
-  }
-
   return (
-    <div className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
+    <div className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
       <Canvas
-        camera={{ position: [0, 0, 8], fov: 50 }}
-        gl={{ alpha: true, antialias: true }}
+        shadows
+        dpr={[1, 2]}
+        camera={{ position: [0, 0, 8], fov: 45 }}
+        gl={{ alpha: true, antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
         className="bg-transparent"
-        style={{ pointerEvents: 'none' }}
       >
         <Scene />
       </Canvas>
